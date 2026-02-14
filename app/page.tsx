@@ -1796,55 +1796,9 @@ export default function AussieVerifySite() {
               />
             </div>
 
-            <div className="mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-4">
-              <div className="text-sm font-semibold text-emerald-900">Supabase SQL (copy/paste)</div>
-              <p className="mt-1 text-sm text-emerald-800">Create tables + policies. Keep this in your project notes.</p>
-              <pre className="mt-3 max-h-64 overflow-auto rounded-2xl bg-white p-4 text-xs text-zinc-900 border border-emerald-100">
-{`-- PROFILES
-create table if not exists public.profiles (
-  user_id uuid primary key references auth.users(id) on delete cascade,
-  org_name text not null default '',
-  role text not null default '',
-  phone text not null default '',
-  state text not null default 'NSW',
-  updated_at timestamptz not null default now()
-);
 
--- VERIFICATIONS
-create table if not exists public.verifications (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
-  created_at timestamptz not null default now(),
-  contractor_name text not null,
-  trade text not null default '',
-  abn text not null default '',
-  licence text not null default '',
-  insurance text not null default '',
-  notes text not null default '',
-  outcome text not null default 'verified'
-);
 
--- Enable RLS
-alter table public.profiles enable row level security;
-alter table public.verifications enable row level security;
 
--- Policies: each user can access only their own rows
-create policy "profiles_select_own" on public.profiles
-for select using (auth.uid() = user_id);
-create policy "profiles_upsert_own" on public.profiles
-for insert with check (auth.uid() = user_id);
-create policy "profiles_update_own" on public.profiles
-for update using (auth.uid() = user_id);
-
-create policy "verifications_select_own" on public.verifications
-for select using (auth.uid() = user_id);
-create policy "verifications_insert_own" on public.verifications
-for insert with check (auth.uid() = user_id);
-create policy "verifications_delete_own" on public.verifications
-for delete using (auth.uid() = user_id);
-`}
-              </pre>
-            </div>
           </div>
         </div>
       </Section>
